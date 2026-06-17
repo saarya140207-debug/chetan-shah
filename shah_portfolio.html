@@ -306,9 +306,12 @@ input.sq:focus{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4
 
 /* ─── TRADE TABLE ─── */
 .trade-card{background:var(--card);border-radius:var(--ri);border:1.5px solid var(--bdr);overflow:hidden;margin-bottom:20px;}
-.trade-row{display:flex;padding:13px 16px;border-bottom:1px solid var(--bdr);align-items:center;gap:12px;flex-wrap:wrap;}
+.trade-row{display:flex;padding:13px 16px;border-bottom:1px solid var(--bdr);align-items:center;gap:12px;flex-wrap:wrap;cursor:pointer;transition:background .12s;user-select:none;}
 .trade-row:last-child{border-bottom:none;}
 .trade-row:hover{background:#F8FAFD;}
+.trade-row.expanded{background:#F4F8FF;border-bottom:none;}
+.tr-expand-arrow{font-size:11px;color:var(--t3);margin-left:4px;transition:transform .2s;display:inline-block;}
+.tr-expand-arrow.open{transform:rotate(180deg);}
 .tr-name{font-size:14px;font-weight:800;flex:1;min-width:100px;}
 .tr-meta{font-size:11px;color:var(--t3);margin-top:2px;}
 .tr-detail{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;}
@@ -318,6 +321,31 @@ input.sq:focus{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4
 .tr-pct{font-size:11px;font-weight:700;margin-top:2px;}
 .tr-pct.up{color:var(--gn);}
 .tr-pct.dn{color:var(--rd);}
+
+/* ─── TRADE DETAIL EXPANDED ─── */
+.trade-detail-wrap{
+  display:none;border-bottom:1px solid var(--bdr);
+  background:linear-gradient(135deg,#F0F5FF,#F7FAFE);
+  padding:14px 16px;
+}
+.trade-detail-wrap.open{display:block;}
+.tdet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tdet-box{background:#fff;border:1.5px solid var(--bdr);border-radius:10px;padding:12px 14px;}
+.tdet-box-head{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:10px;}
+.tdet-line{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:3px 0;border-bottom:1px dashed #EEF2F7;}
+.tdet-line:last-child{border-bottom:none;font-weight:800;font-size:13px;padding-top:8px;margin-top:4px;}
+.tdet-line-lbl{color:var(--t2);}
+.tdet-line-val{font-weight:600;font-variant-numeric:tabular-nums;text-align:right;}
+.tdet-line-val.brok{color:var(--rd);font-size:11px;}
+.tdet-net{
+  background:#fff;border:1.5px solid var(--bdr);border-radius:10px;
+  padding:12px 14px;margin-top:10px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+}
+.tdet-net-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);}
+.tdet-net-val{font-size:18px;font-weight:900;letter-spacing:-.5px;font-variant-numeric:tabular-nums;}
+.tdet-net-pct{font-size:12px;font-weight:700;margin-top:2px;}
+.tdet-brok-total{font-size:11px;color:var(--rd);font-weight:600;margin-top:2px;}
 .tr-qdeets{font-size:11px;color:var(--t3);margin-top:4px;}
 .pl-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700;}
 .pl-badge.up{background:var(--gnbg);color:var(--gn);}
@@ -589,9 +617,14 @@ const avgR   = h => totQ(h) ? totI(h)/totQ(h) : 0;
 const uid    = s => s.replace(/\W+/g,'_');
 
 function tradePL(t){
-  const cost  = t.q * t.br * (1 + (t.bb||0)/100);
-  const proc  = t.q * t.sr * (1 - (t.sb||0)/100);
-  return { cost, proc, pl: proc - cost };
+  const rawBuy  = t.q * t.br;
+  const rawSell = t.q * t.sr;
+  const buyBrok  = rawBuy  * (t.bb||0)/100;
+  const sellBrok = rawSell * (t.sb||0)/100;
+  const cost  = rawBuy  + buyBrok;
+  const proc  = rawSell - sellBrok;
+  const pl    = proc - cost;
+  return { rawBuy, rawSell, buyBrok, sellBrok, cost, proc, pl, totalBrok: buyBrok+sellBrok };
 }
 
 function fmtINR(n, compact=false){
@@ -921,10 +954,55 @@ ${lots.map(l=>`<div class="lrow"><div><div class="ld">${fmtD(l.d)}</div><div cla
 /* ═══════════════════════════════════════
    RENDER: CLOSED DELIVERY TRADES TAB
 ═══════════════════════════════════════ */
+function toggleTradeRow(id){
+  const row    = document.getElementById('tr_'+id);
+  const detail = document.getElementById('td_'+id);
+  const arrow  = document.getElementById('ta_'+id);
+  const open   = detail.classList.contains('open');
+  detail.classList.toggle('open',!open);
+  row.classList.toggle('expanded',!open);
+  if(arrow) arrow.classList.toggle('open',!open);
+}
+
+function tradeDetailHTML(t, id){
+  const {rawBuy,rawSell,buyBrok,sellBrok,cost,proc,pl,totalBrok} = tradePL(t);
+  const pct = (pl/cost*100);
+  const up  = pl>=0;
+  const days = (t.bd&&t.sd) ? Math.round((new Date(t.sd)-new Date(t.bd))/(1000*60*60*24)) : null;
+  return `
+<div class="trade-detail-wrap" id="td_${id}">
+  <div class="tdet-grid">
+    <div class="tdet-box">
+      <div class="tdet-box-head">📥 Buy Side</div>
+      <div class="tdet-line"><span class="tdet-line-lbl">${fmtN(t.q)} shares × ₹${t.br.toFixed(2)}</span><span class="tdet-line-val">${fmtINR(rawBuy)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">Brokerage (${t.bb||0}%)</span><span class="tdet-line-val brok">+ ${fmtINR(buyBrok)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">Total Cost</span><span class="tdet-line-val">${fmtINR(cost)}</span></div>
+    </div>
+    <div class="tdet-box">
+      <div class="tdet-box-head">📤 Sell Side</div>
+      <div class="tdet-line"><span class="tdet-line-lbl">${fmtN(t.q)} shares × ₹${t.sr.toFixed(2)}</span><span class="tdet-line-val">${fmtINR(rawSell)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">Brokerage (${t.sb||0}%)</span><span class="tdet-line-val brok">− ${fmtINR(sellBrok)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">Net Proceeds</span><span class="tdet-line-val">${fmtINR(proc)}</span></div>
+    </div>
+  </div>
+  <div class="tdet-net">
+    <div>
+      <div class="tdet-net-lbl">Net ${up?'Profit':'Loss'} after Brokerage</div>
+      <div class="tdet-brok-total">Total brokerage paid: ${fmtINR(totalBrok)}</div>
+      ${days!==null?`<div class="tdet-brok-total" style="color:var(--t3)">Held for ${days} day${days!==1?'s':''}</div>`:''}
+    </div>
+    <div style="text-align:right">
+      <div class="tdet-net-val ${up?'up':'dn'}" style="color:var(--${up?'gn':'rd'})">${up?'▲':'▼'} ${fmtINR(Math.abs(pl))}</div>
+      <div class="tdet-net-pct ${up?'up':'dn'}" style="color:var(--${up?'gn':'rd'})">${up?'+':'-'}${Math.abs(pct).toFixed(2)}% on cost</div>
+    </div>
+  </div>
+</div>`;
+}
+
 function renderTrades(){
   const sorted = [...DELIVERY_TRADES].sort((a,b)=>tradePL(b).pl-tradePL(a).pl);
-  const totpl = sorted.reduce((s,t)=>s+tradePL(t).pl,0);
-  const wins  = sorted.filter(t=>tradePL(t).pl>=0).length;
+  const totpl  = sorted.reduce((s,t)=>s+tradePL(t).pl,0);
+  const wins   = sorted.filter(t=>tradePL(t).pl>=0).length;
   return `
 <div class="sum-row">
   <div class="sum-item"><div class="sum-l">Total Realised P&L</div><div class="sum-v ${plClass(totpl)}">${fmtINR(totpl)}</div></div>
@@ -933,14 +1011,16 @@ function renderTrades(){
   <div class="sum-item"><div class="sum-l">Losers</div><div class="sum-v dn">${sorted.length-wins}</div></div>
   <div class="sum-item"><div class="sum-l">Win Rate</div><div class="sum-v">${Math.round(wins/sorted.length*100)}%</div></div>
 </div>
+<p style="font-size:12px;color:var(--t3);margin-bottom:10px">All profits shown after deducting brokerage. Tap any trade to see full breakdown →</p>
 <div class="trade-card">
-${sorted.map(t=>{
-  const {cost,proc,pl} = tradePL(t);
+${sorted.map((t,i)=>{
+  const {pl,cost} = tradePL(t);
   const pct = (pl/cost*100).toFixed(2);
-  const up = pl>=0;
-  return `<div class="trade-row">
+  const up  = pl>=0;
+  const id  = 'D'+i;
+  return `<div class="trade-row" id="tr_${id}" onclick="toggleTradeRow('${id}')">
 <div style="flex:1;min-width:120px">
-  <div class="tr-name">${t.s}</div>
+  <div class="tr-name">${t.s} <span class="tr-expand-arrow" id="ta_${id}">▼</span></div>
   <div class="tr-meta">${fmtD(t.bd)} → ${fmtD(t.sd)} &nbsp;·&nbsp; ${fmtN(t.q)} shares</div>
   <div class="tr-qdeets">Bought @ ₹${t.br.toFixed(2)} &nbsp;·&nbsp; Sold @ ₹${t.sr.toFixed(2)}</div>
 </div>
@@ -948,7 +1028,8 @@ ${sorted.map(t=>{
   <span class="pl-badge ${up?'up':'dn'}">${up?'▲':'▼'} ${fmtINR(Math.abs(pl),true)}</span>
   <div class="tr-pct ${up?'up':'dn'}" style="margin-top:4px">${up?'+':'-'}${Math.abs(pct)}%</div>
 </div>
-</div>`;
+</div>
+${tradeDetailHTML(t,id)}`;
 }).join('')}
 </div>`;
 }
@@ -961,7 +1042,7 @@ function renderSpec(){
   return `
 <div class="spec-banner">
   <div class="spec-banner-ico">⚡</div>
-  <div class="spec-banner-text">These are <strong>same-day (intraday) trades</strong> — bought and sold on the same date. They are tracked separately from delivery holdings. Both trades resulted in profits.</div>
+  <div class="spec-banner-text">These are <strong>same-day (intraday) trades</strong> — bought and sold on the same date. Tracked separately from delivery holdings. Tap any trade to see the full breakdown.</div>
 </div>
 <div class="sum-row">
   <div class="sum-item"><div class="sum-l">Total Speculation Profit</div><div class="sum-v up">${fmtINR(totpl)}</div></div>
@@ -969,21 +1050,22 @@ function renderSpec(){
   <div class="sum-item"><div class="sum-l">Win Rate</div><div class="sum-v up">100%</div></div>
 </div>
 <div class="trade-card">
-${SPEC_TRADES.map(t=>{
-  const {cost,proc,pl} = tradePL(t);
+${SPEC_TRADES.map((t,i)=>{
+  const {pl,cost} = tradePL(t);
   const pct = (pl/cost*100).toFixed(2);
-  return `<div class="trade-row">
+  const id  = 'S'+i;
+  return `<div class="trade-row" id="tr_${id}" onclick="toggleTradeRow('${id}')">
 <div style="flex:1;min-width:120px">
-  <div class="tr-name" style="display:flex;align-items:center;gap:8px">${t.s} <span class="spec-tag">⚡ Same Day</span></div>
+  <div class="tr-name" style="display:flex;align-items:center;gap:8px">${t.s} <span class="spec-tag">⚡ Same Day</span> <span class="tr-expand-arrow" id="ta_${id}">▼</span></div>
   <div class="tr-meta">${fmtD(t.bd)} (bought &amp; sold same day) &nbsp;·&nbsp; ${fmtN(t.q)} shares</div>
   <div class="tr-qdeets">Bought @ ₹${t.br.toFixed(2)} &nbsp;·&nbsp; Sold @ ₹${t.sr.toFixed(2)}</div>
-  <div class="tr-qdeets" style="margin-top:2px">Buy cost ${fmtINR(cost)} &nbsp;·&nbsp; Sell proceeds ${fmtINR(proc)}</div>
 </div>
 <div class="tr-detail">
   <span class="pl-badge up">▲ ${fmtINR(pl,true)}</span>
   <div class="tr-pct up" style="margin-top:4px">+${pct}%</div>
 </div>
-</div>`;
+</div>
+${tradeDetailHTML(t,id)}`;
 }).join('')}
 </div>`;
 }
