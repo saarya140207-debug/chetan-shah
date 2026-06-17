@@ -141,11 +141,34 @@ input.sq:focus{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4
 .ac{
   background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);
   padding:14px 16px;border-left:4px solid;box-shadow:var(--sh);
+  cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s;
+  user-select:none;
 }
+.ac:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
+.ac.selected{border-color:currentColor;border-width:2px;box-shadow:0 0 0 3px currentColor,var(--sh2);transform:translateY(-2px);}
 .ac-nm{font-size:14px;font-weight:800;}
 .ac-pl{font-size:11px;color:var(--t3);margin-top:1px;}
 .ac-am{font-size:19px;font-weight:900;letter-spacing:-.5px;margin-top:8px;font-variant-numeric:tabular-nums;color:var(--t1);}
 .ac-ct{font-size:11px;color:var(--t3);margin-top:2px;}
+
+/* ─── ACCOUNT DETAIL FILTER ─── */
+.acct-filter-header{
+  background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);
+  padding:16px 18px;margin-bottom:16px;box-shadow:var(--sh);
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+}
+.acct-filter-back{
+  background:var(--bg);border:1.5px solid var(--bdr);color:var(--t2);
+  padding:7px 14px;border-radius:8px;font-size:13px;font-weight:700;
+  font-family:var(--f);cursor:pointer;transition:background .12s;
+  display:flex;align-items:center;gap:5px;flex-shrink:0;
+}
+.acct-filter-back:hover{background:var(--bdr);}
+.acct-filter-info{flex:1;}
+.acct-filter-name{font-size:18px;font-weight:900;letter-spacing:-.3px;}
+.acct-filter-sub{font-size:12px;color:var(--t3);margin-top:2px;}
+.acct-filter-total{font-size:22px;font-weight:900;letter-spacing:-.5px;font-variant-numeric:tabular-nums;text-align:right;}
+.acct-filter-totalsub{font-size:11px;color:var(--t3);margin-top:2px;text-align:right;}
 
 /* ─── HOLDINGS TABLE ─── */
 .tw{border-radius:var(--ri);overflow:hidden;border:1.5px solid var(--bdr);margin-bottom:20px;}
@@ -608,9 +631,70 @@ function renderStats(){
 }
 
 /* ═══════════════════════════════════════
+   RENDER: ACCOUNT DETAIL (filtered by account)
+═══════════════════════════════════════ */
+function renderAccountDetail(acct, platform){
+  const c = pltC(platform);
+  const relevant = HOLDINGS.map(h=>{
+    const myLots = h.lots.filter(l=>l.a===acct);
+    if(!myLots.length) return null;
+    return {...h, myLots};
+  }).filter(Boolean).sort((a,b)=>{
+    const ai=a.myLots.reduce((s,l)=>s+lotInv(l),0);
+    const bi=b.myLots.reduce((s,l)=>s+lotInv(l),0);
+    return bi-ai;
+  });
+  const totalInv = relevant.reduce((s,h)=>s+h.myLots.reduce((ss,l)=>ss+lotInv(l),0),0);
+  const totalQtyAll = relevant.reduce((s,h)=>s+h.myLots.reduce((ss,l)=>ss+l.q,0),0);
+
+  return `
+<div class="acct-filter-header">
+  <button class="acct-filter-back" onclick="clearAccountFilter()">← All Accounts</button>
+  <div class="acct-filter-info">
+    <div class="acct-filter-name" style="color:${c}">${acct}</div>
+    <div class="acct-filter-sub">${platform} · ${relevant.length} stocks · ${fmtN(totalQtyAll)} total shares</div>
+  </div>
+  <div>
+    <div class="acct-filter-total" style="color:${c}">${fmtINR(totalInv)}</div>
+    <div class="acct-filter-totalsub">Total Invested</div>
+  </div>
+</div>
+<div class="tw">
+<table class="ht">
+<thead><tr>
+<th>Company</th><th class="r">Shares in Account</th><th class="r">Avg Buy Price</th><th class="r">Invested</th>
+</tr></thead>
+<tbody>
+${relevant.map(h=>{
+  const myQ = h.myLots.reduce((s,l)=>s+l.q,0);
+  const myI = h.myLots.reduce((s,l)=>s+lotInv(l),0);
+  const myAvg = myI/myQ;
+  const isSpec = SPEC_SCRIPTS.has(h.s);
+  const multiLot = h.myLots.length > 1;
+  return `<tr onclick="goDetail('${h.s}')">
+<td>
+  <div class="h-s">${h.s}${isSpec?'<span class="spec-tag">⚡ SPEC</span>':''}</div>
+  <div class="h-f">${h.fn}</div>
+  ${multiLot?`<div class="h-f" style="margin-top:4px;color:var(--acc);font-weight:600">${h.myLots.length} lots: ${h.myLots.map(l=>`${fmtN(l.q)}@₹${l.r}`).join(' + ')}</div>`:''}
+</td>
+<td class="r"><span class="h-q">${fmtN(myQ)}</span></td>
+<td class="r" style="font-variant-numeric:tabular-nums;font-weight:600">₹${myAvg.toFixed(2)}</td>
+<td class="r"><span class="h-i">${fmtINR(myI)}</span></td>
+</tr>`;
+}).join('')}
+</tbody>
+</table>
+</div>
+<p style="font-size:12px;color:var(--t3);margin-top:8px;text-align:center">Tap any row to see full lot breakdown → </p>`;
+}
+
+/* ═══════════════════════════════════════
    RENDER: HOLDINGS TAB (OVERVIEW)
 ═══════════════════════════════════════ */
 function renderHoldingsOverview(){
+  /* if an account is selected, show filtered view */
+  if(_filterAcct) return renderAccountDetail(_filterAcct.a, _filterAcct.p);
+
   /* account breakdown */
   const am = {};
   HOLDINGS.forEach(h=>h.lots.forEach(l=>{
@@ -621,12 +705,13 @@ function renderHoldingsOverview(){
   const sorted = [...HOLDINGS].sort((a,b)=>totI(b)-totI(a));
 
   return `
-<div class="sec-h">Account Breakdown</div>
+<div class="sec-h">Account Breakdown &nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">— tap an account to filter</span></div>
 <div class="accts">
 ${Object.values(am).sort((a,b)=>b.inv-a.inv).map(a=>{
   const c=pltC(a.p);
-  return `<div class="ac" style="color:${c};border-left-color:${c}">
-<div class="ac-nm" style="color:${c}">${a.a}</div>
+  const isSelected = _filterAcct && _filterAcct.a === a.a;
+  return `<div class="ac${isSelected?' selected':''}" style="color:${c};border-left-color:${c}" onclick="filterByAccount('${a.a}','${a.p}')">
+<div class="ac-nm" style="color:${c}">${a.a}${isSelected?' ✓':''}</div>
 <div class="ac-pl">${a.p}</div>
 <div class="ac-am">${fmtINR(a.inv)}</div>
 <div class="ac-ct">${a.scr.size} stocks</div>
@@ -793,9 +878,11 @@ function renderSearch(q){
 ═══════════════════════════════════════ */
 let _tab = 'holdings';
 let _q   = '';
+let _filterAcct = null; // { a: account code, p: platform }
 
 function switchTab(t){
   _tab = t;
+  _filterAcct = null;
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
   if(_q) { clearQ(); return; }
@@ -819,6 +906,7 @@ function draw(){
 
 function onSearch(v){
   _q = v;
+  _filterAcct = null;
   const x = document.getElementById('sqx');
   x.className = 'sqx'+(v?' on':'');
   clearTimeout(onSearch._t);
@@ -828,7 +916,7 @@ function onSearch(v){
 function clearQ(){
   document.getElementById('sq').value='';
   document.getElementById('sqx').className='sqx';
-  _q=''; draw();
+  _q=''; _filterAcct=null; draw();
 }
 
 function goDetail(script){
@@ -839,11 +927,22 @@ function goDetail(script){
 
 function goHome(){
   clearQ();
-  _tab='holdings';
+  _tab='holdings'; _filterAcct=null;
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
   document.getElementById('tab-holdings').classList.add('active');
   draw();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function filterByAccount(a, p){
+  if(_filterAcct && _filterAcct.a===a){ _filterAcct=null; }
+  else { _filterAcct={a,p}; }
+  draw();
+  window.scrollTo({top:document.getElementById('mainWrap').offsetTop-10,behavior:'smooth'});
+}
+
+function clearAccountFilter(){
+  _filterAcct=null; draw();
 }
 
 /* ═══════════════════════════════════════
