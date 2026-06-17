@@ -634,10 +634,10 @@ function fmtINR(n, compact=false){
   if(compact && a>=1000) return `${sg}₹${(a/1000).toFixed(1)}K`;
   return `${sg}₹${a.toLocaleString('en-IN',{maximumFractionDigits:0})}`;
 }
-/* Exact full value — no abbreviation, 2 decimal places */
+/* Exact full value — no abbreviation, no decimals */
 function fmtINRFull(n){
   const a=Math.abs(n), sg=n<0?'−':'';
-  return `${sg}₹${a.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  return `${sg}₹${Math.round(a).toLocaleString('en-IN')}`;
 }
 function fmtN(n){ return n.toLocaleString('en-IN'); }
 function fmtD(s){
