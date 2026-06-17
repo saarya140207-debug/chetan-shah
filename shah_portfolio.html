@@ -634,6 +634,11 @@ function fmtINR(n, compact=false){
   if(compact && a>=1000) return `${sg}₹${(a/1000).toFixed(1)}K`;
   return `${sg}₹${a.toLocaleString('en-IN',{maximumFractionDigits:0})}`;
 }
+/* Exact full value — no abbreviation, 2 decimal places */
+function fmtINRFull(n){
+  const a=Math.abs(n), sg=n<0?'−':'';
+  return `${sg}₹${a.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+}
 function fmtN(n){ return n.toLocaleString('en-IN'); }
 function fmtD(s){
   if(!s) return '—';
@@ -974,25 +979,25 @@ function tradeDetailHTML(t, id){
   <div class="tdet-grid">
     <div class="tdet-box">
       <div class="tdet-box-head">📥 Buy Side</div>
-      <div class="tdet-line"><span class="tdet-line-lbl">${fmtN(t.q)} shares × ₹${t.br.toFixed(2)}</span><span class="tdet-line-val">${fmtINR(rawBuy)}</span></div>
-      <div class="tdet-line"><span class="tdet-line-lbl">Brokerage (${t.bb||0}%)</span><span class="tdet-line-val brok">+ ${fmtINR(buyBrok)}</span></div>
-      <div class="tdet-line"><span class="tdet-line-lbl">Total Cost</span><span class="tdet-line-val">${fmtINR(cost)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">${fmtN(t.q)} shares × ₹${t.br.toFixed(2)}</span><span class="tdet-line-val">${fmtINRFull(rawBuy)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">Brokerage (${t.bb||0}%)</span><span class="tdet-line-val brok">+ ${fmtINRFull(buyBrok)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">Total Cost</span><span class="tdet-line-val">${fmtINRFull(cost)}</span></div>
     </div>
     <div class="tdet-box">
       <div class="tdet-box-head">📤 Sell Side</div>
-      <div class="tdet-line"><span class="tdet-line-lbl">${fmtN(t.q)} shares × ₹${t.sr.toFixed(2)}</span><span class="tdet-line-val">${fmtINR(rawSell)}</span></div>
-      <div class="tdet-line"><span class="tdet-line-lbl">Brokerage (${t.sb||0}%)</span><span class="tdet-line-val brok">− ${fmtINR(sellBrok)}</span></div>
-      <div class="tdet-line"><span class="tdet-line-lbl">Net Proceeds</span><span class="tdet-line-val">${fmtINR(proc)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">${fmtN(t.q)} shares × ₹${t.sr.toFixed(2)}</span><span class="tdet-line-val">${fmtINRFull(rawSell)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">Brokerage (${t.sb||0}%)</span><span class="tdet-line-val brok">− ${fmtINRFull(sellBrok)}</span></div>
+      <div class="tdet-line"><span class="tdet-line-lbl">Net Proceeds</span><span class="tdet-line-val">${fmtINRFull(proc)}</span></div>
     </div>
   </div>
   <div class="tdet-net">
     <div>
       <div class="tdet-net-lbl">Net ${up?'Profit':'Loss'} after Brokerage</div>
-      <div class="tdet-brok-total">Total brokerage paid: ${fmtINR(totalBrok)}</div>
+      <div class="tdet-brok-total">Total brokerage paid: ${fmtINRFull(totalBrok)}</div>
       ${days!==null?`<div class="tdet-brok-total" style="color:var(--t3)">Held for ${days} day${days!==1?'s':''}</div>`:''}
     </div>
     <div style="text-align:right">
-      <div class="tdet-net-val ${up?'up':'dn'}" style="color:var(--${up?'gn':'rd'})">${up?'▲':'▼'} ${fmtINR(Math.abs(pl))}</div>
+      <div class="tdet-net-val ${up?'up':'dn'}" style="color:var(--${up?'gn':'rd'})">${up?'▲':'▼'} ${fmtINRFull(Math.abs(pl))}</div>
       <div class="tdet-net-pct ${up?'up':'dn'}" style="color:var(--${up?'gn':'rd'})">${up?'+':'-'}${Math.abs(pct).toFixed(2)}% on cost</div>
     </div>
   </div>
@@ -1005,7 +1010,7 @@ function renderTrades(){
   const wins   = sorted.filter(t=>tradePL(t).pl>=0).length;
   return `
 <div class="sum-row">
-  <div class="sum-item"><div class="sum-l">Total Realised P&L</div><div class="sum-v ${plClass(totpl)}">${fmtINR(totpl)}</div></div>
+  <div class="sum-item"><div class="sum-l">Total Realised P&L</div><div class="sum-v ${plClass(totpl)}">${fmtINRFull(totpl)}</div></div>
   <div class="sum-item"><div class="sum-l">Trades</div><div class="sum-v">${sorted.length}</div></div>
   <div class="sum-item"><div class="sum-l">Winners</div><div class="sum-v up">${wins}</div></div>
   <div class="sum-item"><div class="sum-l">Losers</div><div class="sum-v dn">${sorted.length-wins}</div></div>
@@ -1025,7 +1030,7 @@ ${sorted.map((t,i)=>{
   <div class="tr-qdeets">Bought @ ₹${t.br.toFixed(2)} &nbsp;·&nbsp; Sold @ ₹${t.sr.toFixed(2)}</div>
 </div>
 <div class="tr-detail">
-  <span class="pl-badge ${up?'up':'dn'}">${up?'▲':'▼'} ${fmtINR(Math.abs(pl),true)}</span>
+  <span class="pl-badge ${up?'up':'dn'}">${up?'▲':'▼'} ${fmtINRFull(Math.abs(pl))}</span>
   <div class="tr-pct ${up?'up':'dn'}" style="margin-top:4px">${up?'+':'-'}${Math.abs(pct)}%</div>
 </div>
 </div>
@@ -1045,7 +1050,7 @@ function renderSpec(){
   <div class="spec-banner-text">These are <strong>same-day (intraday) trades</strong> — bought and sold on the same date. Tracked separately from delivery holdings. Tap any trade to see the full breakdown.</div>
 </div>
 <div class="sum-row">
-  <div class="sum-item"><div class="sum-l">Total Speculation Profit</div><div class="sum-v up">${fmtINR(totpl)}</div></div>
+  <div class="sum-item"><div class="sum-l">Total Speculation Profit</div><div class="sum-v up">${fmtINRFull(totpl)}</div></div>
   <div class="sum-item"><div class="sum-l">Trades</div><div class="sum-v">${SPEC_TRADES.length}</div></div>
   <div class="sum-item"><div class="sum-l">Win Rate</div><div class="sum-v up">100%</div></div>
 </div>
@@ -1061,7 +1066,7 @@ ${SPEC_TRADES.map((t,i)=>{
   <div class="tr-qdeets">Bought @ ₹${t.br.toFixed(2)} &nbsp;·&nbsp; Sold @ ₹${t.sr.toFixed(2)}</div>
 </div>
 <div class="tr-detail">
-  <span class="pl-badge up">▲ ${fmtINR(pl,true)}</span>
+  <span class="pl-badge up">▲ ${fmtINRFull(pl)}</span>
   <div class="tr-pct up" style="margin-top:4px">+${pct}%</div>
 </div>
 </div>
