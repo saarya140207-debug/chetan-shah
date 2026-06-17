@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Shah Family Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E8EEF8;
+  --card:#fff;
+  --nav1:#08172B;
+  --nav2:#0E2847;
+  --acc:#1B5FCC;
+  --icici:#E05800;
+  --sushil:#7A28C0;
+  --zerodha:#1A1A1A;
+  --tbd:#C47A00;
+  --gn:#065F46;
+  --gnbg:#D1FAE5;
+  --rd:#991B1B;
+  --rdbg:#FEE2E2;
+  --t1:#0B1728;
+  --t2:#4A5568;
+  --t3:#94A3B8;
+  --bdr:#E2E8F2;
+  --sh:0 1px 2px rgba(8,23,43,.05),0 6px 24px rgba(8,23,43,.07);
+  --sh2:0 2px 4px rgba(8,23,43,.06),0 12px 40px rgba(8,23,43,.1);
+  --r:16px;
+  --ri:10px;
+  --f:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+body{font-family:var(--f);background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+/* ─── NAV ─── */
+.nav{
+  background:linear-gradient(135deg,var(--nav1) 0%,var(--nav2) 100%);
+  padding:14px 16px 0;position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 20px rgba(0,0,0,.25);
+}
+.nav-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.nav-logo{
+  width:38px;height:38px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--acc),#3B82F6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:17px;font-weight:900;color:#fff;letter-spacing:-1px;
+  box-shadow:0 2px 8px rgba(27,95,204,.5);
+  cursor:pointer;user-select:none;transition:opacity .15s;
+}
+.nav-logo:hover{opacity:.85;}
+.nav-brand{cursor:pointer;flex:1;min-width:0;}
+.nav-brand:hover .nav-title{text-decoration:underline;text-underline-offset:2px;text-decoration-color:rgba(255,255,255,.4);}
+.nav-title{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.3px;white-space:nowrap;}
+.nav-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:1px;font-weight:400;}
+.nav-actions{display:flex;gap:8px;flex-shrink:0;}
+.nbtn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+  color:#fff;padding:7px 12px;border-radius:8px;
+  font-size:12px;font-weight:700;font-family:var(--f);
+  cursor:pointer;white-space:nowrap;transition:background .15s;
+  display:flex;align-items:center;gap:5px;
+}
+.nbtn:hover{background:rgba(255,255,255,.2);}
+.nbtn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* ─── SEARCH ─── */
+.nav-search{position:relative;padding-bottom:12px;}
+.srchico{position:absolute;left:14px;top:50%;transform:translateY(-60%);color:rgba(255,255,255,.35);font-size:16px;pointer-events:none;}
+input.sq{
+  width:100%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.14);
+  color:#fff;padding:11px 40px 11px 42px;font-size:15px;font-family:var(--f);
+  border-radius:10px;outline:none;transition:all .15s;
+}
+input.sq::placeholder{color:rgba(255,255,255,.32);}
+input.sq:focus{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.45);}
+.sqx{
+  position:absolute;right:12px;top:50%;transform:translateY(-60%);
+  background:rgba(255,255,255,.14);border:none;color:#fff;
+  width:24px;height:24px;border-radius:50%;font-size:13px;
+  cursor:pointer;display:none;align-items:center;justify-content:center;font-family:var(--f);
+}
+.sqx.on{display:flex;}
+
+/* ─── TABS ─── */
+.tab-bar{
+  display:flex;gap:4px;padding:16px 16px 0;
+  max-width:900px;margin:0 auto;
+}
+.tab{
+  padding:9px 16px;border-radius:10px 10px 0 0;font-size:13px;font-weight:700;
+  cursor:pointer;border:none;font-family:var(--f);background:rgba(255,255,255,.5);
+  color:var(--t2);transition:all .15s;display:flex;align-items:center;gap:6px;
+  border:1.5px solid transparent;border-bottom:none;
+}
+.tab:hover{background:rgba(255,255,255,.75);color:var(--t1);}
+.tab.active{background:#fff;color:var(--t1);border-color:var(--bdr);}
+.tab-pill{
+  background:var(--bdr);color:var(--t3);font-size:10px;font-weight:800;
+  padding:1px 6px;border-radius:20px;
+}
+.tab.active .tab-pill{background:var(--acc);color:#fff;}
+.tab.spec .tab-pill{background:#F59E0B;color:#fff;}
+
+/* ─── CONTENT ─── */
+.wrap{
+  background:#fff;border:1.5px solid var(--bdr);border-radius:0 var(--r) var(--r) var(--r);
+  max-width:900px;margin:0 auto 20px;padding:20px 16px;
+  box-shadow:var(--sh);
+}
+.outer{padding:0 16px 40px;max-width:900px;margin:0 auto;}
+
+/* ─── OVERVIEW STATS ─── */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.stat-card{
+  border-radius:var(--r);padding:16px 18px;position:relative;overflow:hidden;
+  box-shadow:var(--sh);
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,rgba(255,255,255,0) 60%);
+  pointer-events:none;
+}
+.sc-inv{background:linear-gradient(135deg,#0B1F3A,#1A3A6B);}
+.sc-unreal{background:linear-gradient(135deg,#064E3B,#065F46);}
+.sc-unreal.loss{background:linear-gradient(135deg,#7F1D1D,#991B1B);}
+.sc-unreal.neutral{background:linear-gradient(135deg,#1E3A5F,#2B5282);}
+.sc-delivery{background:linear-gradient(135deg,#1A5276,#2471A3);}
+.sc-spec{background:linear-gradient(135deg,#7D3C98,#9B59B6);}
+.stat-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.55);margin-bottom:6px;}
+.stat-val{font-size:22px;font-weight:900;color:#fff;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1.1;}
+.stat-sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;font-weight:500;}
+.stat-loader{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.25);border-top-color:rgba(255,255,255,.8);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;}
+
+/* ─── SECTION HEAD ─── */
+.sec-h{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);margin:0 0 10px;}
+
+/* ─── ACCOUNT CARDS ─── */
+.accts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:22px;}
+.ac{
+  background:var(--card);border:1.5px solid var(--bdr);border-radius:var(--r);
+  padding:14px 16px;border-left:4px solid;box-shadow:var(--sh);
+}
+.ac-nm{font-size:14px;font-weight:800;}
+.ac-pl{font-size:11px;color:var(--t3);margin-top:1px;}
+.ac-am{font-size:19px;font-weight:900;letter-spacing:-.5px;margin-top:8px;font-variant-numeric:tabular-nums;color:var(--t1);}
+.ac-ct{font-size:11px;color:var(--t3);margin-top:2px;}
+
+/* ─── HOLDINGS TABLE ─── */
+.tw{border-radius:var(--ri);overflow:hidden;border:1.5px solid var(--bdr);margin-bottom:20px;}
+.ht{width:100%;border-collapse:collapse;font-size:13.5px;}
+.ht thead th{background:#F8FAFD;padding:11px 14px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);font-weight:700;border-bottom:1.5px solid var(--bdr);}
+.ht thead th.r{text-align:right;}
+.ht tbody td{padding:13px 14px;border-bottom:1px solid #F0F4FA;vertical-align:middle;}
+.ht tbody td.r{text-align:right;font-variant-numeric:tabular-nums;}
+.ht tbody tr:last-child td{border-bottom:none;}
+.ht tbody tr{cursor:pointer;transition:background .1s;}
+.ht tbody tr:hover{background:#F6F9FD;}
+.h-s{font-weight:700;font-size:14px;}
+.h-f{font-size:11px;color:var(--t3);margin-top:2px;}
+.h-q{font-weight:700;font-variant-numeric:tabular-nums;}
+.h-i{font-weight:700;font-variant-numeric:tabular-nums;}
+.chips{display:flex;flex-wrap:wrap;gap:4px;}
+.chip{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.spec-tag{font-size:9px;font-weight:800;background:#FEF3C7;color:#92400E;padding:2px 6px;border-radius:4px;margin-left:4px;vertical-align:middle;}
+
+/* ─── STOCK DETAIL CARD ─── */
+.scard{background:var(--card);border-radius:var(--r);box-shadow:var(--sh2);margin-bottom:18px;overflow:hidden;border:1.5px solid var(--bdr);}
+.sc-top{padding:20px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:1.5px solid var(--bdr);}
+.sc-nm{font-size:22px;font-weight:900;color:var(--t1);letter-spacing:-.6px;}
+.sc-fn{font-size:12px;color:var(--t2);margin-top:4px;}
+.sc-tk{font-size:11px;color:var(--acc);font-weight:700;margin-top:3px;}
+.sc-tk.w{color:var(--tbd);}
+.pbox{text-align:right;min-width:100px;flex-shrink:0;}
+.px{font-size:23px;font-weight:900;letter-spacing:-.6px;font-variant-numeric:tabular-nums;}
+.pxc{font-size:12px;font-weight:700;margin-top:3px;}
+.pxc.up{color:var(--gn);}
+.pxc.dn{color:var(--rd);}
+.pxm{font-size:11px;color:var(--t3);line-height:1.5;}
+
+/* ─── DETAIL STATS ─── */
+.dstats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--bdr);border-bottom:1.5px solid var(--bdr);}
+.ds{background:#FAFBFF;padding:13px 20px;}
+.ds-l{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);font-weight:700;}
+.ds-v{font-size:15px;font-weight:800;color:var(--t1);margin-top:3px;font-variant-numeric:tabular-nums;}
+.ds-v.up{color:var(--gn);}
+.ds-v.dn{color:var(--rd);}
+.ds-v.dim{color:var(--t3);}
+
+/* ─── LOTS ─── */
+.lots{padding:16px 20px;}
+.lots-h{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:12px;}
+.lag{border:1.5px solid var(--bdr);border-radius:10px;overflow:hidden;margin-bottom:10px;}
+.lag:last-child{margin-bottom:0;}
+.lag-h{background:#F8FAFD;padding:9px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--bdr);flex-wrap:wrap;}
+.abadge{font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;}
+.ptag{font-size:11px;color:var(--t3);font-weight:500;}
+.atot{margin-left:auto;font-size:11px;color:var(--t2);font-weight:700;font-variant-numeric:tabular-nums;}
+.lrow{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid #EEF2F7;}
+.lrow:last-child{border-bottom:none;}
+.ld{font-size:11px;color:var(--t3);}
+.lq{font-size:13px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums;}
+.lr{font-size:11px;color:var(--t3);text-align:right;font-variant-numeric:tabular-nums;}
+.li{font-size:13px;font-weight:700;text-align:right;margin-top:2px;font-variant-numeric:tabular-nums;}
+
+/* ─── TBD STRIP ─── */
+.tbd-strip{background:#FFFBEB;border-bottom:1.5px solid #FDE68A;padding:9px 20px;font-size:12px;color:var(--tbd);font-weight:600;display:flex;align-items:center;gap:6px;}
+
+/* ─── TRADE TABLE ─── */
+.trade-card{background:var(--card);border-radius:var(--ri);border:1.5px solid var(--bdr);overflow:hidden;margin-bottom:20px;}
+.trade-row{display:flex;padding:13px 16px;border-bottom:1px solid var(--bdr);align-items:center;gap:12px;flex-wrap:wrap;}
+.trade-row:last-child{border-bottom:none;}
+.trade-row:hover{background:#F8FAFD;}
+.tr-name{font-size:14px;font-weight:800;flex:1;min-width:100px;}
+.tr-meta{font-size:11px;color:var(--t3);margin-top:2px;}
+.tr-detail{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;}
+.tr-pl{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;}
+.tr-pl.up{color:var(--gn);}
+.tr-pl.dn{color:var(--rd);}
+.tr-pct{font-size:11px;font-weight:700;margin-top:2px;}
+.tr-pct.up{color:var(--gn);}
+.tr-pct.dn{color:var(--rd);}
+.tr-qdeets{font-size:11px;color:var(--t3);margin-top:4px;}
+.pl-badge{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700;}
+.pl-badge.up{background:var(--gnbg);color:var(--gn);}
+.pl-badge.dn{background:var(--rdbg);color:var(--rd);}
+
+/* ─── SPEC NOTE ─── */
+.spec-banner{
+  background:linear-gradient(135deg,#7C3AED15,#F59E0B15);
+  border:1.5px solid #F59E0B50;border-radius:var(--ri);
+  padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px;
+}
+.spec-banner-ico{font-size:20px;}
+.spec-banner-text{font-size:13px;color:#92400E;font-weight:500;}
+.spec-banner-text strong{color:#78350F;}
+
+/* ─── SUMMARY ROW ─── */
+.sum-row{background:#F8FAFD;border:1.5px solid var(--bdr);border-radius:var(--ri);padding:14px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.sum-item{text-align:center;}
+.sum-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);}
+.sum-v{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;margin-top:3px;}
+.sum-v.up{color:var(--gn);}
+.sum-v.dn{color:var(--rd);}
+
+/* ─── NO RESULTS ─── */
+.no-res{background:var(--card);border-radius:var(--r);border:1.5px solid var(--bdr);padding:48px 20px;text-align:center;}
+.nr-ic{font-size:40px;margin-bottom:10px;}
+.nr-tx{color:var(--t2);font-size:15px;}
+
+/* ─── MISC ─── */
+.res-meta{font-size:12px;color:var(--t3);margin-bottom:14px;font-weight:500;}
+.divider{height:1.5px;background:var(--bdr);margin:20px 0;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spin{width:12px;height:12px;border:2px solid rgba(255,255,255,.2);border-top-color:rgba(255,255,255,.8);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;}
+.spin.dark{border-color:#CBD5E0;border-top-color:var(--acc);}
+
+/* ─── RESPONSIVE ─── */
+@media(min-width:500px){
+  .stat-row{grid-template-columns:repeat(2,1fr);}
+  .accts{grid-template-columns:repeat(3,1fr);}
+}
+@media(min-width:680px){
+  .stat-row{grid-template-columns:repeat(4,1fr);}
+  .accts{grid-template-columns:repeat(4,1fr);}
+  .dstats{grid-template-columns:repeat(3,1fr);}
+  .nav{padding:16px 24px 0;}
+  .outer{padding:0 24px 48px;}
+  .wrap{padding:22px 20px;}
+  .tab-bar{padding:16px 24px 0;}
+}
+@media(min-width:900px){
+  .nav{padding:18px 40px 0;}
+  .outer{padding:0 40px 60px;}
+  .tab-bar{padding:16px 40px 0;}
+  .dstats{grid-template-columns:repeat(5,1fr);}
+  .nav-title{font-size:17px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav">
+  <div class="nav-row">
+    <div class="nav-logo" onclick="goHome()" title="Go to home">₹</div>
+    <div class="nav-brand" onclick="goHome()" title="Go to home">
+      <div class="nav-title">Shah Family Portfolio</div>
+      <div class="nav-sub">Updated <span id="jsDate"></span> · ICICI Direct · Sushil Finance</div>
+    </div>
+    <div class="nav-actions">
+      <button class="nbtn" id="refreshBtn" onclick="refreshAll()"><span id="rIco">⟳</span> <span id="rTxt">Prices</span></button>
+    </div>
+  </div>
+  <div class="nav-search">
+    <span class="srchico">⌕</span>
+    <input class="sq" id="sq" type="search" placeholder="Search any company — RAIN, NOCIL, RELIGARE…"
+      oninput="onSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="sqx" id="sqx" onclick="clearQ()">✕</button>
+  </div>
+</nav>
+
+<!-- ═══ TABS ═══ -->
+<div class="tab-bar" id="tabBar">
+  <button class="tab active" id="tab-holdings" onclick="switchTab('holdings')">
+    📈 Holdings <span class="tab-pill" id="tpH">39</span>
+  </button>
+  <button class="tab" id="tab-trades" onclick="switchTab('trades')">
+    💰 Closed Trades <span class="tab-pill" id="tpT">27</span>
+  </button>
+  <button class="tab spec" id="tab-spec" onclick="switchTab('spec')">
+    ⚡ Speculation <span class="tab-pill" id="tpS">2</span>
+  </button>
+</div>
+
+<!-- ═══ WRAP ═══ -->
+<div class="wrap" id="mainWrap">
+  <!-- ── OVERVIEW STATS (always visible) ── -->
+  <div class="stat-row" id="statsRow"></div>
+  <!-- ── MAIN CONTENT ── -->
+  <div id="content"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════ */
+const UPDATED = "17 Jun 2026";
+const SPEC_SCRIPTS = new Set(["RELIGARE ENT","ZEE TELE"]); // from SALE SAMEDAY entries
+
+const PLT_COLOR = {
+  "ICICI Direct": "#E05800",
+  "Sushil Finance": "#7A28C0",
+  "Zerodha": "#1A1A1A",
+  "TBD": "#C47A00"
+};
+
+/* ═══════════════════════════════════════
+   HOLDINGS DATA (BUY SHEET — 39 stocks, 54 lots)
+═══════════════════════════════════════ */
+const HOLDINGS = [
+  {s:"RAIN IND",      fn:"Rain Industries Ltd",                   t:"RAIN.NS",
+   lots:[{a:"TBD",p:"TBD",d:"2025-12-15",q:4300,r:115.40,b:.41},{a:"ICIC-RMHUF",p:"ICICI Direct",d:"2026-02-09",q:1800,r:165,b:.41}]},
+  {s:"MOTHER SUMI",   fn:"Motherson Sumi Wiring India Ltd",        t:"MSUMI.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2025-12-24",q:3600,r:119.45,b:.41}]},
+  {s:"ONE POINT",     fn:"One Point One Solutions Ltd",            t:"ONEPOINTONE.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2025-12-26",q:5400,r:58.05,b:.41}]},
+  {s:"CAMLIN FIN",    fn:"Camlin Fine Sciences Ltd",               t:"CAMLINFINE.NS",
+   lots:[{a:"TBD",p:"TBD",d:"2025-12-31",q:3600,r:150.90,b:.41}]},
+  {s:"JAY BALAJI",    fn:"Jay Balaji Industries Ltd",              t:"JAYBALAJI.NS",
+   lots:[{a:"TBD",p:"TBD",d:"2026-01-01",q:1000,r:71.65,b:.41}]},
+  {s:"SBC",           fn:"SBC Exports Ltd",                        t:"SBC.NS",
+   lots:[{a:"TBD",p:"TBD",d:"2026-01-01",q:1000,r:28.80,b:.41}]},
+  {s:"NTPC GREEN",    fn:"NTPC Green Energy Ltd",                  t:"NTPCGREEN.NS",
+   lots:[{a:"TBD",p:"TBD",d:"2025-01-02",q:1000,r:96.75,b:.41}]},
+  {s:"MMTC",          fn:"MMTC Ltd",                               t:"MMTC.NS",
+   lots:[{a:"ICIC-RMHUF",p:"ICICI Direct",d:"2026-01-14",q:6000,r:71,b:.41}]},
+  {s:"PRIM FOCUS",    fn:"Prime Focus Ltd",                        t:"PRIMEFOCUS.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-01-19",q:2000,r:222.5,b:.41},{a:"ICIC-RMHUF",p:"ICICI Direct",d:"2026-01-28",q:3600,r:214.5,b:.41}]},
+  {s:"NATCO PHARMA",  fn:"Natco Pharma Ltd",                       t:"NATCOPHARM.NS",
+   lots:[{a:"TBD",p:"TBD",d:"2026-02-05",q:500,r:854.55,b:.41}]},
+  {s:"JSW STEEL",     fn:"JSW Steel Ltd",                          t:"JSWSTEEL.NS",
+   lots:[{a:"TBD",p:"TBD",d:"2026-03-16",q:500,r:1141,b:.41}]},
+  {s:"REL INFRA",     fn:"Reliance Infrastructure Ltd",            t:"RELINFRA.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-02-05",q:1800,r:129.80,b:.41}]},
+  {s:"RELIGARE ENT",  fn:"Religare Enterprises Ltd",               t:"RELIGARE.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-02-06",q:1800,r:254.5,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-02-11",q:6000,r:266,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-02-12",q:2000,r:249.9,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-02-16",q:1800,r:237,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-02-26",q:2000,r:215,b:.41}]},
+  {s:"PARADEEP",      fn:"Paradeep Phosphates Ltd",                t:"PARADEEP.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-02-09",q:1800,r:129.5,b:0},{a:"ICIC-RM",p:"ICICI Direct",d:"2026-02-17",q:2000,r:125.2,b:.41}]},
+  {s:"NOCIL",         fn:"NOCIL Ltd",                              t:"NOCIL.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-02-10",q:1800,r:153.1,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-02-09",q:3600,r:153.5,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-03-10",q:1000,r:135.5,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-05-27",q:1300,r:172,b:.41}]},
+  {s:"LLOYED ENG",    fn:"Lloyds Engineering Works Ltd",           t:"LLOYDSENGG.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-02-09",q:6000,r:54.5,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-05-26",q:4500,r:76.4,b:.41}]},
+  {s:"STAR HEALTH",   fn:"Star Health & Allied Insurance Co Ltd",  t:"STARHEALTH.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-02-11",q:900,r:483.5,b:.41}]},
+  {s:"JIO FIN",       fn:"Jio Financial Services Ltd",             t:"JIOFIN.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-03-18",q:4200,r:250,b:.41}]},
+  {s:"TRIGIN TECHNO", fn:"Trigyn Technologies Ltd",                t:"TRIGYN.NS",
+   lots:[{a:"P-71",p:"Sushil Finance",d:"2026-04-08",q:7200,r:48,b:.41},{a:"P-71",p:"Sushil Finance",d:"2026-05-27",q:4500,r:61,b:.41}]},
+  {s:"J P POWER",     fn:"Jaiprakash Power Ventures Ltd",          t:"JPPOWER.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-04-10",q:60000,r:17.36,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-05-07",q:58000,r:19.22,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-05-26",q:36000,r:19.35,b:.41}]},
+  {s:"BEPL",          fn:"Bhansali Engineering Polymers Ltd",      t:"BEPL.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-04-13",q:3600,r:93.55,b:.41}]},
+  {s:"GPPL",          fn:"Gujarat Pipavav Port Ltd",               t:"GPPL.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-04-14",q:3600,r:157,b:.41},{a:"ICIC-VR",p:"ICICI Direct",d:"2026-05-25",q:4500,r:154,b:.41}]},
+  {s:"ION EXCHANGE",  fn:"Ion Exchange (India) Ltd",               t:"IONEXCHANG.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-04-20",q:900,r:402,b:.41}]},
+  {s:"SHREERAM FIN",  fn:"Shriram Finance Ltd",                    t:"SHRIRAMFIN.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-04-27",q:1800,r:980,b:.41}]},
+  {s:"WALCHAND NAGAR",fn:"Walchandnagar Industries Ltd",           t:"WALCHANNAG.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-04-28",q:1800,r:232,b:.41}]},
+  {s:"CESC",          fn:"CESC Ltd",                               t:"CESC.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-05-06",q:1800,r:184.9,b:.41}]},
+  {s:"AWL",           fn:"Adani Wilmar Ltd",                       t:"AWL.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-05-07",q:900,r:209.8,b:.41}]},
+  {s:"SHAKTI PUMP",   fn:"Shakti Pumps (India) Ltd",               t:"SHAKTIPUMP.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-05-07",q:600,r:602,b:.41}]},
+  {s:"NUVOCO VISTA",  fn:"Nuvoco Vistas Corporation Ltd",          t:"NUVOCO.NS",
+   lots:[{a:"TBD",p:"TBD",d:"2026-05-07",q:600,r:337,b:.41}]},
+  {s:"OLECTRA",       fn:"Olectra Greentech Ltd",                  t:"OLECTRA.NS",
+   lots:[{a:"ICIC-RMHUF",p:"ICICI Direct",d:"2026-05-22",q:600,r:1219,b:.41}]},
+  {s:"PAIN LAB",      fn:"Pain Lab  ·  ⚠️ NSE ticker not confirmed",t:null,
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-05-27",q:1800,r:151.7,b:.41}]},
+  {s:"SJVN",          fn:"SJVN Ltd",                               t:"SJVN.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-06-02",q:1800,r:72,b:.41}]},
+  {s:"RVNL",          fn:"Rail Vikas Nigam Ltd",                   t:"RVNL.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-06-02",q:1800,r:241,b:.41}]},
+  {s:"NAUKARI",       fn:"Info Edge (India) Ltd  ·  Naukri.com",   t:"NAUKRI.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-06-08",q:600,r:1003.5,b:.41}]},
+  {s:"MIDHANI",       fn:"Mishra Dhatu Nigam Ltd",                 t:"MIDHANI.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-06-10",q:1800,r:438,b:.41}]},
+  {s:"YASHO",         fn:"Yasho Industries Ltd",                   t:"YASHO.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-06-10",q:180,r:2500,b:.41}]},
+  {s:"INOX WIND",     fn:"Inox Wind Ltd",                          t:"INOXWIND.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-06-12",q:9000,r:83.41,b:.41}]},
+  {s:"LA OPALA",      fn:"La Opala RG Ltd",                        t:"LAOPALA.NS",
+   lots:[{a:"ICIC-RM",p:"ICICI Direct",d:"2026-06-15",q:3500,r:179.65,b:.41}]},
+  {s:"CAPRI GLOBAL",  fn:"Capri Global Capital Ltd",               t:"CGCL.NS",
+   lots:[{a:"ICIC-VR",p:"ICICI Direct",d:"2026-06-16",q:1800,r:219.5,b:.41}]}
+];
+
+/* ═══════════════════════════════════════
+   CLOSED DELIVERY TRADES (SALE sheet — non same-day)
+   Fields: s=script, bd=buyDate, sd=sellDate, q=qty,
+           br=buyRate, bb=buyBrok, sr=sellRate, sb=sellBrok
+═══════════════════════════════════════ */
+const DELIVERY_TRADES = [
+  {s:"RAIN IND",       bd:"2025-12-15",sd:null,         q:2000, br:115.40,bb:.41, sr:205.50,sb:.41},
+  {s:"JAY BALAJI",     bd:"2026-01-01",sd:null,         q:2600, br:71.65, bb:.41, sr:82.50, sb:.41},
+  {s:"SBC",            bd:"2026-01-01",sd:"2026-05-22", q:5000, br:28.80, bb:.41, sr:38.40, sb:.41},
+  {s:"NTPC GREEN",     bd:"2025-01-02",sd:null,         q:5600, br:96.75, bb:.41, sr:119.00,sb:.41},
+  {s:"ORIENT HOTEL",   bd:"2026-01-13",sd:"2026-05-26", q:4200, br:115.00,bb:.41, sr:99.10, sb:.41},
+  {s:"PRIM FOCUS",     bd:"2026-01-19",sd:"2026-02-05", q:2000, br:229.10,bb:.41, sr:271.90,sb:.41},
+  {s:"IDFC FIRST",     bd:"2026-01-23",sd:"2026-05-27", q:6000, br:84.55, bb:.41, sr:70.00, sb:.41},
+  {s:"NATCO PHARMA",   bd:"2026-02-06",sd:"2026-02-16", q:500,  br:832.50,bb:0,   sr:891.00,sb:.41},
+  {s:"NATCO PHARMA",   bd:"2026-02-05",sd:"2026-02-16", q:400,  br:829.00,bb:.41, sr:927.00,sb:.41},
+  {s:"PARAS DEF",      bd:"2026-03-06",sd:"2026-04-17", q:360,  br:745.00,bb:.41, sr:794.00,sb:.41},
+  {s:"NATCO PHARMA",   bd:"2026-02-05",sd:"2026-04-08", q:400,  br:854.55,bb:.41, sr:1095.00,sb:.41},
+  {s:"SRF",            bd:"2026-04-14",sd:"2026-05-06", q:250,  br:2514.00,bb:.41,sr:2730.00,sb:.41},
+  {s:"TILAKNAGAR IND", bd:"2026-04-17",sd:"2026-04-20", q:900,  br:471.00,bb:.41, sr:489.00,sb:.41},
+  {s:"MOTILAL OSWAL",  bd:"2026-04-20",sd:"2026-06-15", q:200,  br:820.00,bb:.41, sr:928.00,sb:.41},
+  {s:"MOTILAL OSWAL",  bd:"2026-04-20",sd:"2026-05-06", q:700,  br:820.00,bb:.41, sr:877.00,sb:.41},
+  {s:"POONAVALA",      bd:"2026-04-22",sd:"2026-05-06", q:450,  br:422.00,bb:.41, sr:459.00,sb:.41},
+  {s:"KOPRAN",         bd:"2026-04-23",sd:null,         q:1800, br:164.50,bb:.41, sr:208.50,sb:.41},
+  {s:"HUDCO",          bd:"2026-04-23",sd:"2026-05-08", q:1800, br:205.25,bb:.41, sr:232.60,sb:.41},
+  {s:"LLOYED ENG",     bd:"2026-05-06",sd:"2026-05-08", q:6000, br:60.61, bb:.41, sr:66.00, sb:.41},
+  {s:"JSW STEEL",      bd:"2026-03-16",sd:null,         q:400,  br:1141.00,bb:.41,sr:1184.00,sb:.41},
+  {s:"TATA CHEMI",     bd:"2026-05-06",sd:null,         q:600,  br:817.55,bb:.41, sr:797.00,sb:.41},
+  {s:"TATA CHEMI",     bd:"2026-06-08",sd:null,         q:900,  br:760.00,bb:.41, sr:797.00,sb:.41},
+  {s:"VADILAL IND",    bd:"2026-04-09",sd:null,         q:250,  br:4608.00,bb:.41,sr:5260.00,sb:.41},
+  {s:"VADILAL IND",    bd:"2026-04-10",sd:null,         q:250,  br:4560.00,bb:.41,sr:5240.00,sb:.41},
+  {s:"PAISA LO",       bd:"2026-05-27",sd:null,         q:9000, br:51.25, bb:.41, sr:59.34, sb:.41},
+  {s:"V MART",         bd:"2026-05-22",sd:"2026-06-15", q:900,  br:641.50,bb:.41, sr:750.00,sb:.41},
+  {s:"EPACK PEB",      bd:"2026-05-22",sd:"2026-06-15", q:1800, br:193.00,bb:.41, sr:253.90,sb:.41}
+];
+
+/* ═══════════════════════════════════════
+   SPECULATION / SAME-DAY TRADES
+═══════════════════════════════════════ */
+const SPEC_TRADES = [
+  {s:"RELIGARE ENT",   bd:"2026-02-03",sd:"2026-02-03", q:3600, br:243.00,bb:.41, sr:252.00,sb:.41},
+  {s:"ZEE TELE",       bd:"2026-06-04",sd:"2026-06-04", q:3600, br:98.80, bb:.10,  sr:107.00,sb:0}
+];
+
+/* ═══════════════════════════════════════
+   UTILS
+═══════════════════════════════════════ */
+const lotInv = l => l.q * l.r * (1 + (l.b||0)/100);
+const totQ   = h => h.lots.reduce((s,l)=>s+l.q, 0);
+const totI   = h => h.lots.reduce((s,l)=>s+lotInv(l), 0);
+const avgR   = h => totQ(h) ? totI(h)/totQ(h) : 0;
+const uid    = s => s.replace(/\W+/g,'_');
+
+function tradePL(t){
+  const cost  = t.q * t.br * (1 + (t.bb||0)/100);
+  const proc  = t.q * t.sr * (1 - (t.sb||0)/100);
+  return { cost, proc, pl: proc - cost };
+}
+
+function fmtINR(n, compact=false){
+  const a=Math.abs(n), sg=n<0?'−':'';
+  if(a>=10000000) return `${sg}₹${(a/10000000).toFixed(2)} Cr`;
+  if(a>=100000)   return `${sg}₹${(a/100000).toFixed(2)} L`;
+  if(compact && a>=1000) return `${sg}₹${(a/1000).toFixed(1)}K`;
+  return `${sg}₹${a.toLocaleString('en-IN',{maximumFractionDigits:0})}`;
+}
+function fmtN(n){ return n.toLocaleString('en-IN'); }
+function fmtD(s){
+  if(!s) return '—';
+  return new Date(s).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'2-digit'});
+}
+function pltC(p){ return PLT_COLOR[p]||'#9CA3AF'; }
+function plClass(v){ return v>=0?'up':'dn'; }
+
+/* pre-compute realised P&L */
+const delivPL  = DELIVERY_TRADES.reduce((s,t)=>s+tradePL(t).pl, 0);
+const specPL   = SPEC_TRADES.reduce((s,t)=>s+tradePL(t).pl, 0);
+const totalInvested = HOLDINGS.reduce((s,h)=>s+totI(h), 0);
+
+/* ═══════════════════════════════════════
+   LIVE PRICE STATE
+═══════════════════════════════════════ */
+const _px = {};
+let _liveValue = 0;
+let _livePriced = 0;
+
+function _updateUnrealStat(){
+  if(_livePriced === 0) return;
+  const pl = _liveValue - totalInvested;
+  const pct = (pl/totalInvested*100).toFixed(2);
+  const el = document.getElementById('stat-unreal');
+  if(!el) return;
+  const up = pl >= 0;
+  el.className = `stat-card sc-unreal${up?'':' loss'}`;
+  el.innerHTML = `<div class="stat-lbl">Open P&L (Live · ${_livePriced} stocks)</div>
+<div class="stat-val">${fmtINR(pl)}</div>
+<div class="stat-sub">${up?'▲':'▼'} ${Math.abs(pct)}% · Value ${fmtINR(_liveValue)}</div>`;
+}
+
+async function fetchPx(ticker){
+  if(!ticker) return null;
+  if(_px[ticker] !== undefined) return _px[ticker];
+  try{
+    const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ticker)}?interval=1d&range=1d`,{credentials:'omit'});
+    if(!r.ok) throw 0;
+    const d = await r.json();
+    const m = d?.chart?.result?.[0]?.meta;
+    if(m && m.regularMarketPrice){
+      const prev = m.previousClose||m.chartPreviousClose||m.regularMarketPrice;
+      const obj = {cur:m.regularMarketPrice, prev, chg:m.regularMarketPrice-prev, pct:(m.regularMarketPrice-prev)/prev*100};
+      _px[ticker] = obj; return obj;
+    }
+  }catch(e){}
+  _px[ticker] = null; return null;
+}
+
+async function loadPx(h){
+  const id = uid(h.s);
+  const boxEl = document.getElementById('px_'+id);
+  if(!boxEl) return;
+  const px = await fetchPx(h.t);
+  if(!boxEl.isConnected) return;
+  if(px){
+    const up = px.chg >= 0;
+    boxEl.innerHTML = `<div class="px">${px.cur>=1000?'₹'+Math.round(px.cur).toLocaleString('en-IN'):'₹'+px.cur.toFixed(2)}</div>
+<div class="pxc ${up?'up':'dn'}">${up?'▲':'▼'} ${Math.abs(px.pct).toFixed(2)}%</div>`;
+    /* update P&L summary boxes */
+    const tq = totQ(h), ti = totI(h), cv = px.cur*tq, pl = cv-ti, plp=(pl/ti*100);
+    const ve = document.getElementById('ds_cv_'+id);
+    const pe = document.getElementById('ds_pl_'+id);
+    if(ve) ve.innerHTML=`<div class="ds-l">Current Value</div><div class="ds-v">${fmtINR(cv)}</div>`;
+    if(pe) pe.innerHTML=`<div class="ds-l">Unrealised P&L</div><div class="ds-v ${plClass(pl)}">${fmtINR(pl)}<br><span style="font-size:12px">(${plp.toFixed(2)}%)</span></div>`;
+    /* update live total */
+    const prev = _px[h.t]?._prevContrib || 0;
+    _liveValue += cv - prev;
+    _px[h.t]._prevContrib = cv;
+    _livePriced++;
+    _updateUnrealStat();
+  } else {
+    boxEl.innerHTML = `<div class="pxm">${h.t?'Unavailable':'Ticker unknown'}</div>`;
+  }
+}
+
+async function refreshAll(){
+  const btn = document.getElementById('refreshBtn');
+  document.getElementById('rIco').textContent='';
+  document.getElementById('rTxt').textContent='Loading…';
+  btn.disabled = true;
+  Object.keys(_px).forEach(k=>delete _px[k]);
+  _liveValue = 0; _livePriced = 0;
+  // reset unreal stat
+  const u = document.getElementById('stat-unreal');
+  if(u) u.innerHTML=`<div class="stat-lbl">Open P&L</div><div class="stat-val"><span class="stat-loader"></span></div><div class="stat-sub">Fetching live prices…</div>`;
+  const visible = HOLDINGS.filter(h=>document.getElementById('px_'+uid(h.s)));
+  for(const h of visible){ await loadPx(h); await new Promise(r=>setTimeout(r,180)); }
+  document.getElementById('rIco').textContent='⟳';
+  document.getElementById('rTxt').textContent='Prices';
+  btn.disabled = false;
+}
+
+/* ═══════════════════════════════════════
+   RENDER STATS ROW
+═══════════════════════════════════════ */
+function renderStats(){
+  const up2 = delivPL>=0, up3 = specPL>=0;
+  return `
+<div class="stat-card sc-inv">
+  <div class="stat-lbl">Total Invested</div>
+  <div class="stat-val">${fmtINR(totalInvested)}</div>
+  <div class="stat-sub">${HOLDINGS.length} stocks · ${HOLDINGS.reduce((s,h)=>s+h.lots.length,0)} lots</div>
+</div>
+<div class="stat-card sc-unreal neutral" id="stat-unreal">
+  <div class="stat-lbl">Open P&L</div>
+  <div class="stat-val" style="font-size:16px;opacity:.7">Press Prices ↗</div>
+  <div class="stat-sub">Tap Prices button to load</div>
+</div>
+<div class="stat-card sc-delivery">
+  <div class="stat-lbl">Delivery Profit</div>
+  <div class="stat-val">${fmtINR(delivPL)}</div>
+  <div class="stat-sub">${up2?'▲ Profit':'▼ Loss'} · ${DELIVERY_TRADES.length} trades closed</div>
+</div>
+<div class="stat-card sc-spec">
+  <div class="stat-lbl">Speculation Profit</div>
+  <div class="stat-val">${fmtINR(specPL)}</div>
+  <div class="stat-sub">${up3?'▲ Profit':'▼ Loss'} · ${SPEC_TRADES.length} same-day trades</div>
+</div>`;
+}
+
+/* ═══════════════════════════════════════
+   RENDER: HOLDINGS TAB (OVERVIEW)
+═══════════════════════════════════════ */
+function renderHoldingsOverview(){
+  /* account breakdown */
+  const am = {};
+  HOLDINGS.forEach(h=>h.lots.forEach(l=>{
+    const k = l.a+'|'+l.p;
+    if(!am[k]) am[k]={a:l.a,p:l.p,inv:0,scr:new Set()};
+    am[k].inv += lotInv(l); am[k].scr.add(h.s);
+  }));
+  const sorted = [...HOLDINGS].sort((a,b)=>totI(b)-totI(a));
+
+  return `
+<div class="sec-h">Account Breakdown</div>
+<div class="accts">
+${Object.values(am).sort((a,b)=>b.inv-a.inv).map(a=>{
+  const c=pltC(a.p);
+  return `<div class="ac" style="color:${c};border-left-color:${c}">
+<div class="ac-nm" style="color:${c}">${a.a}</div>
+<div class="ac-pl">${a.p}</div>
+<div class="ac-am">${fmtINR(a.inv)}</div>
+<div class="ac-ct">${a.scr.size} stocks</div>
+</div>`;
+}).join('')}
+</div>
+<div class="sec-h">All Holdings &nbsp;<span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--t3)">— tap any row for detail</span></div>
+<div class="tw">
+<table class="ht">
+<thead><tr>
+<th>Company</th><th>Accounts</th><th class="r">Shares</th><th class="r">Invested</th>
+</tr></thead>
+<tbody>
+${sorted.map(h=>{
+  const isSpec = SPEC_SCRIPTS.has(h.s);
+  const accs = [...new Set(h.lots.map(l=>l.a))];
+  return `<tr onclick="goDetail('${h.s}')">
+<td><div class="h-s">${h.s}${isSpec?'<span class="spec-tag">⚡ SPEC</span>':''}</div><div class="h-f">${h.fn}</div></td>
+<td><div class="chips">${accs.map(a=>{const c=pltC(h.lots.find(l=>l.a===a)?.p);return`<span class="chip" style="background:${c}18;color:${c}">${a}</span>`;}).join('')}</div></td>
+<td class="r"><span class="h-q">${fmtN(totQ(h))}</span></td>
+<td class="r"><span class="h-i">${fmtINR(totI(h))}</span></td>
+</tr>`;
+}).join('')}
+</tbody>
+</table>
+</div>`;
+}
+
+/* ═══════════════════════════════════════
+   RENDER: STOCK DETAIL CARD
+═══════════════════════════════════════ */
+function renderDetail(h){
+  const tq=totQ(h), ti=totI(h), ar=avgR(h);
+  const hasTBD = h.lots.some(l=>l.a==='TBD');
+  const isSpec = SPEC_SCRIPTS.has(h.s);
+  const byA = {};
+  h.lots.forEach(l=>{if(!byA[l.a])byA[l.a]=[];byA[l.a].push(l);});
+  const id = uid(h.s);
+  return `
+<div class="scard">
+  <div class="sc-top">
+    <div>
+      <div class="sc-nm">${h.s}${isSpec?`<span class="spec-tag" style="font-size:11px;margin-left:8px">⚡ Speculative</span>`:''}</div>
+      <div class="sc-fn">${h.fn}</div>
+      ${h.t?`<div class="sc-tk">NSE: ${h.t.replace('.NS','')}</div>`:`<div class="sc-tk w">⚠️ NSE ticker not confirmed — live price unavailable</div>`}
+    </div>
+    <div class="pbox" id="px_${id}">
+      <div class="pxm"><span class="spin dark"></span> Loading…</div>
+    </div>
+  </div>
+  ${hasTBD?`<div class="tbd-strip">⚠️ Some lots have unassigned account codes (TBD) — provide codes to fix</div>`:''}
+  <div class="dstats">
+    <div class="ds"><div class="ds-l">Total Shares</div><div class="ds-v">${fmtN(tq)}</div></div>
+    <div class="ds"><div class="ds-l">Total Invested</div><div class="ds-v">${fmtINR(ti)}</div></div>
+    <div class="ds"><div class="ds-l">Avg Buy Price</div><div class="ds-v">₹${ar.toFixed(2)}</div></div>
+    <div class="ds" id="ds_cv_${id}"><div class="ds-l">Current Value</div><div class="ds-v dim">—</div></div>
+    <div class="ds" id="ds_pl_${id}"><div class="ds-l">Unrealised P&L</div><div class="ds-v dim">—</div></div>
+  </div>
+  <div class="lots">
+    <div class="lots-h">Holdings by Account</div>
+    ${Object.entries(byA).map(([acct,lots])=>{
+      const aq=lots.reduce((s,l)=>s+l.q,0);
+      const ai=lots.reduce((s,l)=>s+lotInv(l),0);
+      const c=pltC(lots[0].p);
+      return `<div class="lag">
+<div class="lag-h">
+<span class="abadge" style="background:${c}18;color:${c}">${acct}</span>
+<span class="ptag">${lots[0].p}</span>
+<span class="atot">${fmtN(aq)} shares · ${fmtINR(ai)}</span>
+</div>
+${lots.map(l=>`<div class="lrow"><div><div class="ld">${fmtD(l.d)}</div><div class="lq">${fmtN(l.q)} shares</div></div><div><div class="lr">@ ₹${l.r.toFixed(2)}</div><div class="li">${fmtINR(lotInv(l))}</div></div></div>`).join('')}
+</div>`;
+    }).join('')}
+  </div>
+</div>`;
+}
+
+/* ═══════════════════════════════════════
+   RENDER: CLOSED DELIVERY TRADES TAB
+═══════════════════════════════════════ */
+function renderTrades(){
+  const sorted = [...DELIVERY_TRADES].sort((a,b)=>tradePL(b).pl-tradePL(a).pl);
+  const totpl = sorted.reduce((s,t)=>s+tradePL(t).pl,0);
+  const wins  = sorted.filter(t=>tradePL(t).pl>=0).length;
+  return `
+<div class="sum-row">
+  <div class="sum-item"><div class="sum-l">Total Realised P&L</div><div class="sum-v ${plClass(totpl)}">${fmtINR(totpl)}</div></div>
+  <div class="sum-item"><div class="sum-l">Trades</div><div class="sum-v">${sorted.length}</div></div>
+  <div class="sum-item"><div class="sum-l">Winners</div><div class="sum-v up">${wins}</div></div>
+  <div class="sum-item"><div class="sum-l">Losers</div><div class="sum-v dn">${sorted.length-wins}</div></div>
+  <div class="sum-item"><div class="sum-l">Win Rate</div><div class="sum-v">${Math.round(wins/sorted.length*100)}%</div></div>
+</div>
+<div class="trade-card">
+${sorted.map(t=>{
+  const {cost,proc,pl} = tradePL(t);
+  const pct = (pl/cost*100).toFixed(2);
+  const up = pl>=0;
+  return `<div class="trade-row">
+<div style="flex:1;min-width:120px">
+  <div class="tr-name">${t.s}</div>
+  <div class="tr-meta">${fmtD(t.bd)} → ${fmtD(t.sd)} &nbsp;·&nbsp; ${fmtN(t.q)} shares</div>
+  <div class="tr-qdeets">Bought @ ₹${t.br.toFixed(2)} &nbsp;·&nbsp; Sold @ ₹${t.sr.toFixed(2)}</div>
+</div>
+<div class="tr-detail">
+  <span class="pl-badge ${up?'up':'dn'}">${up?'▲':'▼'} ${fmtINR(Math.abs(pl),true)}</span>
+  <div class="tr-pct ${up?'up':'dn'}" style="margin-top:4px">${up?'+':'-'}${Math.abs(pct)}%</div>
+</div>
+</div>`;
+}).join('')}
+</div>`;
+}
+
+/* ═══════════════════════════════════════
+   RENDER: SPECULATION TAB
+═══════════════════════════════════════ */
+function renderSpec(){
+  const totpl = SPEC_TRADES.reduce((s,t)=>s+tradePL(t).pl,0);
+  return `
+<div class="spec-banner">
+  <div class="spec-banner-ico">⚡</div>
+  <div class="spec-banner-text">These are <strong>same-day (intraday) trades</strong> — bought and sold on the same date. They are tracked separately from delivery holdings. Both trades resulted in profits.</div>
+</div>
+<div class="sum-row">
+  <div class="sum-item"><div class="sum-l">Total Speculation Profit</div><div class="sum-v up">${fmtINR(totpl)}</div></div>
+  <div class="sum-item"><div class="sum-l">Trades</div><div class="sum-v">${SPEC_TRADES.length}</div></div>
+  <div class="sum-item"><div class="sum-l">Win Rate</div><div class="sum-v up">100%</div></div>
+</div>
+<div class="trade-card">
+${SPEC_TRADES.map(t=>{
+  const {cost,proc,pl} = tradePL(t);
+  const pct = (pl/cost*100).toFixed(2);
+  return `<div class="trade-row">
+<div style="flex:1;min-width:120px">
+  <div class="tr-name" style="display:flex;align-items:center;gap:8px">${t.s} <span class="spec-tag">⚡ Same Day</span></div>
+  <div class="tr-meta">${fmtD(t.bd)} (bought &amp; sold same day) &nbsp;·&nbsp; ${fmtN(t.q)} shares</div>
+  <div class="tr-qdeets">Bought @ ₹${t.br.toFixed(2)} &nbsp;·&nbsp; Sold @ ₹${t.sr.toFixed(2)}</div>
+  <div class="tr-qdeets" style="margin-top:2px">Buy cost ${fmtINR(cost)} &nbsp;·&nbsp; Sell proceeds ${fmtINR(proc)}</div>
+</div>
+<div class="tr-detail">
+  <span class="pl-badge up">▲ ${fmtINR(pl,true)}</span>
+  <div class="tr-pct up" style="margin-top:4px">+${pct}%</div>
+</div>
+</div>`;
+}).join('')}
+</div>`;
+}
+
+/* ═══════════════════════════════════════
+   RENDER: SEARCH RESULTS
+═══════════════════════════════════════ */
+function renderSearch(q){
+  const qq = q.trim().toLowerCase();
+  const res = HOLDINGS.filter(h=>
+    h.s.toLowerCase().includes(qq)||
+    h.fn.toLowerCase().includes(qq)||
+    (h.t&&h.t.toLowerCase().replace('.ns','').includes(qq))
+  );
+  if(!res.length) return `<div class="no-res"><div class="nr-ic">🔍</div><div class="nr-tx">No holdings found for <strong>"${q}"</strong></div></div>`;
+  return `<p class="res-meta">${res.length} result${res.length>1?'s':''} found</p>${res.map(h=>renderDetail(h)).join('')}`;
+}
+
+/* ═══════════════════════════════════════
+   STATE & ROUTING
+═══════════════════════════════════════ */
+let _tab = 'holdings';
+let _q   = '';
+
+function switchTab(t){
+  _tab = t;
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  if(_q) { clearQ(); return; }
+  draw();
+}
+
+function draw(){
+  const content = document.getElementById('content');
+  if(_q && _q.trim()){
+    document.getElementById('tabBar').style.opacity='0.5';
+    content.innerHTML = renderSearch(_q);
+    const qq = _q.trim().toLowerCase();
+    HOLDINGS.filter(h=>h.s.toLowerCase().includes(qq)||h.fn.toLowerCase().includes(qq)||(h.t&&h.t.toLowerCase().replace('.ns','').includes(qq))).forEach(h=>loadPx(h));
+  } else {
+    document.getElementById('tabBar').style.opacity='1';
+    if(_tab==='holdings')  content.innerHTML = renderHoldingsOverview();
+    else if(_tab==='trades') content.innerHTML = renderTrades();
+    else if(_tab==='spec') content.innerHTML = renderSpec();
+  }
+}
+
+function onSearch(v){
+  _q = v;
+  const x = document.getElementById('sqx');
+  x.className = 'sqx'+(v?' on':'');
+  clearTimeout(onSearch._t);
+  onSearch._t = setTimeout(draw, 160);
+}
+
+function clearQ(){
+  document.getElementById('sq').value='';
+  document.getElementById('sqx').className='sqx';
+  _q=''; draw();
+}
+
+function goDetail(script){
+  const inp = document.getElementById('sq');
+  inp.value = script; onSearch(script);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goHome(){
+  clearQ();
+  _tab='holdings';
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-holdings').classList.add('active');
+  draw();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ═══════════════════════════════════════
+   INIT
+═══════════════════════════════════════ */
+document.getElementById('jsDate').textContent = UPDATED;
+document.getElementById('statsRow').innerHTML = renderStats();
+document.getElementById('tpH').textContent = HOLDINGS.length;
+document.getElementById('tpT').textContent = DELIVERY_TRADES.length;
+document.getElementById('tpS').textContent = SPEC_TRADES.length;
+draw();
+</script>
+</body>
+</html>
